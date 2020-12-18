@@ -1,3 +1,4 @@
+
 subroutine init_cavity_ts_use_profile
   ! Initialize the T/S under cavity by specifying a profile
   ! So this routine is not a general routine for all purpose.	
@@ -221,7 +222,7 @@ subroutine cavity_heat_water_fluxes_3eq
   use o_mesh
   use o_param
   use o_array
-  use i_array
+  !use i_array
   use g_parfe
   implicit none
 
@@ -275,7 +276,8 @@ subroutine cavity_heat_water_fluxes_3eq
      ! Calculate the in-situ temperature tin
      !call potit(s(i,j,N,lrhs)+35.0,t(i,j,N,lrhs),-zice(i,j),rp,tin)
 
-!     write(200+mype,'(3f7.2,2i8)') temp,sal,zice,n,nk
+     !write(200+mype,'(3f7.2,2i8)') temp,sal,zice,n,nk
+     !write(6,'(3f7.2,2i8)') temp,sal,zice,n,nk
 
 !!RT RG47901: use this to run the first month (eventually it turned out to be needed always....)
 !!     if (abs(zice).lt.1.) then
@@ -377,8 +379,12 @@ subroutine cavity_heat_water_fluxes_3eq
      !rt  t_surf_flux(i,j)=gat*(tf-tin)
      !rt  s_surf_flux(i,j)=gas*(sf-(s(i,j,N,lrhs)+35.0))
 
-     heat_flux(n)  = rhow*cpw*gat*(tin-tf)      ! [W/m2]  ! positive for upward
-     water_flux(n) =          gas*(sf-sal)/sf   ! [m/s]   !
+    !heat_flux(n)  = rhow*cpw*gat*(tin-tf)      ! [W/m2]  ! positive for upward
+    !water_flux(n) =          gas*(sf-sal)/sf   ! [m/s]   !
+    heat_flux(n)  = 0      ! [W/m2]  ! positive for upward
+    water_flux(n) = 0      ! [m/s]   !
+ 
+ 
 
      !      qo=-rhor*seta*oofw
      !      if(seta.le.0.) then
@@ -389,8 +395,8 @@ subroutine cavity_heat_water_fluxes_3eq
      ! write(*,'(a10,i10,9f10.3)') 'ice shelf',n,zice,rhow,temp,sal,tin,tf,sf,heat_flux(n),water_flux(n)*86400.*365.
 
      !for saving to output:
-     net_heat_flux(n)=-heat_flux(n)   ! positive down
-     fresh_wa_flux(n)=-water_flux(n)
+     !net_heat_flux(n)=-heat_flux(n)   ! positive down
+     !fresh_wa_flux(n)=-water_flux(n)
      Tsurf(n)=tf                       ! RT RG45970
      Ssurf(n)=sf                       ! RT RG45970
   enddo
@@ -550,12 +556,14 @@ end subroutine cavity_heat_water_fluxes_2eq
 subroutine cavity_momentum_fluxes
   ! Compute the momentum fluxes under ice cavity
   ! Moved to this separated routine by Qiang, 20.1.2012
+  ! modified by Ole to avoid needing the ice model only for u_w v_w; done for
+  ! Isomip setup
 
   use o_mesh
   use o_param
-  use o_array, only: stress_x, stress_y
-  use i_array, only: u_w, v_w
-  use i_dyn_parms
+  use o_array!, only: stress_x, stress_y
+  !use i_array, only: u_w, v_w
+  !use i_dyn_parms
   use g_config
   use g_parfe
   implicit none
@@ -564,19 +572,26 @@ subroutine cavity_momentum_fluxes
   real(kind=8)   :: gama, L, aux
   real(kind=8)   :: c2, c3, c4, c5, c6
   real(kind=8)   :: t_i, s_i, p, t_fz
+  real(kind=8)   :: u_w, v_w
+
 
   do n=1,ToDim_nod2D      
      if(cavity_flag_nod2d(n)==0) cycle   
      row=nod3d_below_nod2d(1,n)
 
      ! momentum stress:
-
+     ! Ole code taken from ocean2ice
+     u_w = uf(row)
+     v_w = uf(row+myDim_nod3d+eDim_nod3D)
+     !elevation(row)= ssh(row)
      ! need to check the sensitivity to the drag coefficient
      ! here I use the bottom stress coefficient
 
-     aux=sqrt(u_w(n)**2+v_w(n)**2)*rho0*C_d   * 2.  ! RT factor 2. for stress parameter for RG44025
-     stress_x(n)=-aux*u_w(n)
-     stress_y(n)=-aux*v_w(n)
+     ! write(*,'(a10,i10,9f10.3)') 'ice shelf',n,zice,rhow,temp,sal,tin,tf,sf,heat_flux(n),water_flux(n)*86400.*365.
+     !write(*,'(a10,i10,9f10.3)') 'ice shelf',n,rho0,C_d,v_w(n),u_w(n)
+     aux=sqrt(u_w**2+v_w**2)*rho0*C_d    ! RT factor 2. for stress parameter for RG44025 !Ole taken out for ISOMIP
+     stress_x(n)=-aux*u_w
+     stress_y(n)=-aux*v_w
 
   enddo
 

@@ -74,7 +74,7 @@ program main
 #endif
 
   if(buffer_zone) then
-     call init_restoring_bufferzone
+     call init_restoring_bufferzone_isomip
   end if
 
 #ifdef use_opbnd_tide
@@ -170,7 +170,6 @@ program main
      call update_atm_forcing_OnlyOcean
 #endif
 #endif
-
 #ifdef use_cavity
   call cavity_momentum_fluxes
   call cavity_heat_water_fluxes_3eq

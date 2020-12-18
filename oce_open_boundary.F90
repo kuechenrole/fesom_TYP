@@ -2,6 +2,47 @@
 !open boundary velocity restoring from Qiang.
 !----------------------------------------------------------------
 
+subroutine init_restoring_bufferzone_isomip
+  ! init tracer buffer zone for isomip setup 
+  use o_mesh
+  use o_param
+  use o_array
+  use o_elements
+  use g_config
+  use g_rotate_grid
+  use g_parfe
+  implicit none
+  
+  integer                     :: row
+  real(kind=8)                :: y, d, buffer_dist
+  real(kind=8)                :: ymax_local, ymax_global
+
+  buffer_dist=150.0e3  !in m, buffer zone scale
+
+  ymax_local=maxval(coord_nod2d(2,:))
+
+  call MPI_Barrier(MPI_COMM_WORLD,MPIerr)
+  call MPI_AllREDUCE(ymax_local, ymax_global, &
+       1, MPI_DOUBLE_PRECISION, MPI_MAX, &
+       MPI_COMM_WORLD, MPIerr)
+
+  allocate(tracer_restore_coeff(myDim_nod3d+eDim_nod3d))
+  tracer_restore_coeff=0.0
+
+  do row=1,myDim_nod3d+eDim_nod3d
+     
+     y=coord_nod3d(2,row)
+     d=(ymax_global-y)*r_earth
+     
+     if(d<buffer_dist) then
+        tracer_restore_coeff(row)=(buffer_dist-d)/buffer_dist*restore_ts_buff
+     end if
+  end do
+
+  if(mype==0) write(*,*) 'restoring buffer zone ready: FO001'
+
+end subroutine init_restoring_bufferzone_isomip
+
 subroutine init_restoring_bufferzone
   ! init tracer buffer zone for FO001 setup (a southern ocean setup)
   use o_mesh

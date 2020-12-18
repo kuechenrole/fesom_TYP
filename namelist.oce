@@ -72,7 +72,7 @@ restore_t_surf=0.
 
 balance_salt_water=.true.	! balance virtual-salt or freshwater flux or not 
 
-buffer_zone=.false.
+buffer_zone=.true.
 restore_ts_buff=2.31e-05 	! 12h; 1/s 1./(86400.*30.) 3.858e-7
 /
 

@@ -19,6 +19,8 @@ subroutine ocean_init
   implicit none
 
   integer       :: i, node
+  integer              :: k, n, n3
+  real(kind=8)         :: z
 
   ! ocean dynamic fields and active tracers
 
@@ -27,10 +29,22 @@ subroutine ocean_init
   if (.not.r_restart .or. buffer_zone) then
      uf=0.0
      ssh=0.0
-     if(mype==0) write(*,*) 'read ocean T&S climate data ', trim(OceClimaDataName)
-     call read_init_ts
+     !if(mype==0) write(*,*) 'read ocean T&S climate data ', trim(OceClimaDataName)
+     !call read_init_ts
+     if(mype==0) write(*,*) 'initialise TS linear profiles '
+
+     !do n=1,nod2D
+     do n=1,myDim_nod2d+eDim_nod2d
+         do k=1,num_layers_below_nod2d(n)+1
+            n3=nod3d_below_nod2d(k,n)
+            z=coord_nod3d(3,n3)
+            tracer(n3,1)=1.0 + (-1.9-1.0)/720.*(z+720.0)
+            tracer(n3,2)=34.7 + (33.8-34.7)/720.*(z+720.0)
+         end do
+     end do
+
 #ifdef use_cavity
-     call init_cavity_ts_extrapolate
+     !call init_cavity_ts_extrapolate
      !rt call init_cavity_ts_use_profile
 #endif
      tracer0(:,1:2)=tracer(:,1:2)
