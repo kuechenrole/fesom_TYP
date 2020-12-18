@@ -379,10 +379,10 @@ subroutine cavity_heat_water_fluxes_3eq
      !rt  t_surf_flux(i,j)=gat*(tf-tin)
      !rt  s_surf_flux(i,j)=gas*(sf-(s(i,j,N,lrhs)+35.0))
 
-    !heat_flux(n)  = rhow*cpw*gat*(tin-tf)      ! [W/m2]  ! positive for upward
-    !water_flux(n) =          gas*(sf-sal)/sf   ! [m/s]   !
-    heat_flux(n)  = 0      ! [W/m2]  ! positive for upward
-    water_flux(n) = 0      ! [m/s]   !
+    heat_flux(n)  = rhow*cpw*gat*(tin-tf)      ! [W/m2]  ! positive for upward
+    water_flux(n) =          gas*(sf-sal)/sf   ! [m/s]   !
+    !heat_flux(n)  = 0      ! [W/m2]  ! positive for upward
+    !water_flux(n) = 0      ! [m/s]   !
  
  
 
