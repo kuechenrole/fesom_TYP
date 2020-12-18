@@ -26,22 +26,39 @@ subroutine ocean_init
 
   ! read ocean status
 
-  if (.not.r_restart .or. buffer_zone) then
+  if (.not.r_restart) then
      uf=0.0
      ssh=0.0
      !if(mype==0) write(*,*) 'read ocean T&S climate data ', trim(OceClimaDataName)
      !call read_init_ts
-     if(mype==0) write(*,*) 'initialise TS linear profiles '
+     if (case_initial=='warm') then
 
-     !do n=1,nod2D
-     do n=1,myDim_nod2d+eDim_nod2d
-         do k=1,num_layers_below_nod2d(n)+1
-            n3=nod3d_below_nod2d(k,n)
-            z=coord_nod3d(3,n3)
-            tracer(n3,1)=1.0 + (-1.9-1.0)/720.*(z+720.0)
-            tracer(n3,2)=34.7 + (33.8-34.7)/720.*(z+720.0)
-         end do
-     end do
+             if(mype==0) write(*,*) 'set warm initial conditions'
+
+             !do n=1,nod2D
+             do n=1,myDim_nod2d+eDim_nod2d
+                 do k=1,num_layers_below_nod2d(n)+1
+                    n3=nod3d_below_nod2d(k,n)
+                    z=coord_nod3d(3,n3)
+                    tracer(n3,1)=1.0 + (-1.9-1.0)/720.*(z+720.0)
+                    tracer(n3,2)=34.7 + (33.8-34.7)/720.*(z+720.0)
+                 end do
+             end do
+
+     elseif (case_initial=='cold') then
+
+            if(mype==0) write(*,*) 'set cold initial conditions'
+
+             !do n=1,nod2D
+             do n=1,myDim_nod2d+eDim_nod2d
+                 do k=1,num_layers_below_nod2d(n)+1
+                    n3=nod3d_below_nod2d(k,n)
+                    z=coord_nod3d(3,n3)
+                    tracer(n3,1)=-1.9
+                    tracer(n3,2)=34.55 + (33.8-34.55)/720.*(z+720.0)
+                 end do
+             end do
+     endif
 
 #ifdef use_cavity
      !call init_cavity_ts_extrapolate
@@ -49,6 +66,34 @@ subroutine ocean_init
 #endif
      tracer0(:,1:2)=tracer(:,1:2)
   end if
+
+  if (buffer_zone==.true.) then
+    if (case_forcing=='warm') then
+    if(mype==0) write(*,*) 'set warm forcing'
+
+             do n=1,myDim_nod2d+eDim_nod2d
+                 do k=1,num_layers_below_nod2d(n)+1
+                    n3=nod3d_below_nod2d(k,n)
+                    z=coord_nod3d(3,n3)
+                    tracer0(n3,1)=1.0 + (-1.9-1.0)/720.*(z+720.0)
+                    tracer0(n3,2)=34.7 + (33.8-34.7)/720.*(z+720.0)
+                 end do
+             end do
+
+    elseif (case_forcing=='cold') then
+    if(mype==0) write(*,*) 'set cold forcing'
+
+             do n=1,myDim_nod2d+eDim_nod2d
+                 do k=1,num_layers_below_nod2d(n)+1
+                    n3=nod3d_below_nod2d(k,n)
+                    z=coord_nod3d(3,n3)
+                    tracer0(n3,1)=-1.9
+                    tracer0(n3,2)=34.55 + (33.8-34.55)/720.*(z+720.0)
+                 end do
+             end do
+
+    endif
+  endif
 
   if (use_passive_tracer) then   
    if(mype==0) write(*,*) 'call passive_tracer_init'

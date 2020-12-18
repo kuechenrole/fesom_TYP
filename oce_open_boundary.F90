@@ -3,44 +3,34 @@
 !----------------------------------------------------------------
 
 subroutine init_restoring_bufferzone_isomip
-  ! init tracer buffer zone for isomip setup 
+  ! init T/S buffer zone for Arctic setup
+  ! T/S restored to PHC2.1 annual mean.
   use o_mesh
   use o_param
   use o_array
-  use o_elements
   use g_config
-  use g_rotate_grid
   use g_parfe
   implicit none
-  
-  integer                     :: row
-  real(kind=8)                :: y, d, buffer_dist
-  real(kind=8)                :: ymax_local, ymax_global
+  !
+  integer                     :: i
+  real(kind=8)                :: x_r0, x_r1, gamma_0, x
 
-  buffer_dist=150.0e3  !in m, buffer zone scale
+  x_r0 = 790.0 !restoring start in km
+  x_r1 = 800.0 !restoring end in km
+  gamma_0 = 1.157e-06 !1/10days  in s
 
-  ymax_local=maxval(coord_nod2d(2,:))
-
-  call MPI_Barrier(MPI_COMM_WORLD,MPIerr)
-  call MPI_AllREDUCE(ymax_local, ymax_global, &
-       1, MPI_DOUBLE_PRECISION, MPI_MAX, &
-       MPI_COMM_WORLD, MPIerr)
-
-  allocate(tracer_restore_coeff(myDim_nod3d+eDim_nod3d))
+  allocate(tracer_restore_coeff(myDim_nod3D+eDim_nod3D))
   tracer_restore_coeff=0.0
+  ! east boundary
 
-  do row=1,myDim_nod3d+eDim_nod3d
-     
-     y=coord_nod3d(2,row)
-     d=(ymax_global-y)*r_earth
-     
-     if(d<buffer_dist) then
-        tracer_restore_coeff(row)=(buffer_dist-d)/buffer_dist*restore_ts_buff
+  do i=1, myDim_nod3D+eDim_nod3D
+     x = coord_nod3D(1,i)*111.0
+     if(x >= x_r0) then
+        tracer_restore_coeff(i)=gamma_0*((x-x_r0)/(x_r1-x_r0))
      end if
   end do
 
-  if(mype==0) write(*,*) 'restoring buffer zone ready: FO001'
-
+  if(mype==0) write(*,*) 'restoring buffer zone ready'
 end subroutine init_restoring_bufferzone_isomip
 
 subroutine init_restoring_bufferzone

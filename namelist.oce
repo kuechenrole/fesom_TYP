@@ -31,7 +31,7 @@ diff_conv_limit=1.0		!diff due to convective instability  was 2.0
 
 Kv0_const=.true.		!use Kv0 not varying with depth and latitude 
 
-mix_scheme='KPP'    		!vertical mixing scheme: KPP, PP, MY2p5, no  
+mix_scheme='no'    		!vertical mixing scheme: KPP, PP, MY2p5, no  
 
 visc_sh_limit=2.0e-2   ! 1.0e-2		!for kpp, max visc due to shear instability
 diff_sh_limit=1.0e-2		!for kpp, max diff due to shear instability

@@ -6,8 +6,12 @@ module g_config
 
   ! *** Modelname ***
   character(7)             	:: runid='RG12345'                ! a model/setup name
+    ! ISOMIP+ settings
+  character(4)                 :: case_initial='warm'           ! 'warm', 'cold'
+  character(4)                 :: case_forcing='warm'           ! 'warm', 'cold'
 
-  namelist /modelname/ runid
+
+  namelist /modelname/ runid, case_initial, case_forcing
 
   ! *** time step ***
   integer                  	:: step_per_day=12           	!number of steps per day
