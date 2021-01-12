@@ -24,7 +24,7 @@ subroutine init_restoring_bufferzone_isomip
   ! east boundary
 
   do i=1, myDim_nod3D+eDim_nod3D
-     x = coord_nod3D(1,i)*111.0
+     x = coord_nod3D(1,i)/rad*111.0
      if(x >= x_r0) then
         tracer_restore_coeff(i)=gamma_0*((x-x_r0)/(x_r1-x_r0))
      end if
