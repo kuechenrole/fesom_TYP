@@ -2193,6 +2193,7 @@ subroutine output(directionflag)
   if(mype==0) write(*,*)'Do output (netCDF) ...'
   call write_snapshots
 
+
   ! write mean fields
 #if defined(allow_calcmeans) || defined(allow_diag)
   call compute_means
@@ -2200,6 +2201,7 @@ subroutine output(directionflag)
 #ifdef allow_diag
   if(diag_oce .and. (diag_oce_SGS_transp .or. diag_oce_GM_vel)) call write_means_part2
 #endif
+
   call clean_meanarrays
 #endif
 
@@ -2212,6 +2214,7 @@ subroutine output(directionflag)
 
   save_count=save_count+1
 
+  if(mype==0) write(*,*)'output done'
 end subroutine output
 !
 !--------------------------------------------------------------------------------------------

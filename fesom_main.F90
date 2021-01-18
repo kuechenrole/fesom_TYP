@@ -94,17 +94,17 @@ program main
   if(mype==0) write(*,*) '*************************************************************'
   ! forcing: arrays, initialization, interpolation preparation  
 
-#ifdef use_ice
+#if defined(use_ice)
   call forcing_array_setup
-  call init_forcing_interp      ! calculates the forcing interpolation weights
-  call init_atm_forcing         ! initialize forcing fields
+  !call init_forcing_interp !calculates the forcing interpolation weights
+  !call init_atm_forcing         ! initialize forcing fields
 #else
 #ifndef toy_ocean
   call forcing_array_setup_OnlyOcean
   call init_forcing_interp 
   call init_atm_forcing_OnlyOcean 
-#endif 
 #endif
+#endif 
 
   if(use_landice_water) call landice_water_init
 
@@ -161,9 +161,11 @@ program main
 
 #ifdef use_ice    
      call ocean2ice
+#ifndef isomip
      call update_atm_forcing
      call ice_step
      call ice2ocean
+#endif
      if(use_landice_water) call add_landice_water
 #else
 #ifndef toy_ocean
