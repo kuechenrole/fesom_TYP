@@ -111,6 +111,7 @@ subroutine compute_ref_density
   use o_PARAM
   use o_array
   use g_PARFE
+  use g_config
   implicit none
   !
   integer         :: n2, n, k
@@ -124,9 +125,16 @@ subroutine compute_ref_density
 !  T=4.0
   do n2=1,myDim_nod2d+eDim_nod2d
      n=nod3d_below_nod2d(1,n2)
-!     z=0.0  !start from 0; need to check if other options are better.
+  if(grid_type==1) then
 ! GO
      z=min(0.0,coord_nod3D(3,n))  
+! OG
+  elseif(grid_type==2) then
+     z=0.0
+  endif
+!     z=0.0  !start from 0; need to check if other options are better.
+! GO
+!     z=min(0.0,coord_nod3D(3,n))  
 ! OG
      call fcn_density(T, S, z, density_ref(n))
      do k=2,num_layers_below_nod2d(n2)+1
@@ -151,6 +159,7 @@ subroutine compute_density
   use o_PARAM
   use o_array
   use g_PARFE
+  use g_config
   implicit none
   !
   integer         :: n2, n, k
@@ -158,10 +167,13 @@ subroutine compute_density
   !
   do n2=1,myDim_nod2d+eDim_nod2d
      n=nod3d_below_nod2d(1,n2)
-!     z=0.0   !start from 0; need to check if other options are better.
+  if(grid_type==1) then
 ! GO
      z=min(0.0,coord_nod3D(3,n))  
 ! OG
+  elseif(grid_type==2) then
+     z=0.0
+  endif
      call fcn_density(tracer(n,1), tracer(n,2), z, density_insitu(n))
      do k=2,num_layers_below_nod2d(n2)+1
         n=nod3d_below_nod2d(k,n2)
@@ -241,6 +253,7 @@ subroutine compute_pressure
   use o_array
   use o_MATRICES
   use g_PARFE
+  use g_config
 #ifdef use_fullfreesurf
   use i_therm_parms
   use i_array
@@ -261,14 +274,18 @@ subroutine compute_pressure
      wd_ice_eff=(rhoice*m_ice(n)+rhosno*m_snow(n))*rho0r
      hpressure(node_hi)=g*min(wd_ice_eff,max_ice_loading)
 #else
-! GO
-
+  if(grid_type==1) then
      z_up=coord_nod3d(3,node_hi)
      hpressure(node_hi)=-coord_nod3d(3,node_hi)*(density_insitu(node_hi)-density_ref(node_hi)) &
 	  *g*rho0r 
+  elseif(grid_type==2) then
+! GO
+     z_up=0.0
+     hpressure(node_hi)=0.0
 !     hpressure(node_hi)=0.0
 
 ! OG
+  endif
 #endif
      do i=2, num_layers_below_nod2D(n)+1
         node_lo = nod3D_below_nod2D(i,n) 

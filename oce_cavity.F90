@@ -379,6 +379,8 @@ subroutine cavity_heat_water_fluxes_3eq
 
      heat_flux(n)  = rhow*cpw*gat*(tin-tf)      ! [W/m2]  ! positive for upward
      water_flux(n) =          gas*(sf-sal)/sf   ! [m/s]   !
+     !heat_flux(n)  = 0.0      ! [W/m2]  ! positive for upward
+     !water_flux(n) = 0.0     ! [m/s]   !
 
      !      qo=-rhor*seta*oofw
      !      if(seta.le.0.) then
@@ -574,7 +576,8 @@ subroutine cavity_momentum_fluxes
      ! need to check the sensitivity to the drag coefficient
      ! here I use the bottom stress coefficient
 
-     aux=sqrt(u_w(n)**2+v_w(n)**2)*rho0*C_d   * 2.  ! RT factor 2. for stress parameter for RG44025
+     !aux=sqrt(u_w(n)**2+v_w(n)**2)*rho0*C_d   * 2.  ! RT factor 2. for stress parameter for RG44025
+     aux=sqrt(u_w(n)**2+v_w(n)**2)*rho0*C_d  ! OR factor 2 taken away for isomip
      stress_x(n)=-aux*u_w(n)
      stress_y(n)=-aux*v_w(n)
 
