@@ -9,7 +9,7 @@ module o_param
   real(kind=8), parameter  	:: omega=2.0*pi/(24.0*60.0*60.0)
   real(kind=8), parameter  	:: g=9.81                       ![m/s^2]
   real(kind=8), parameter  	:: r_earth=6.3675e6             ![m]
-  real(kind=8), parameter  	:: rho0=1030.                   ![kg/m^3]
+  real(kind=8), parameter  	:: rho0=1027.51                 ![kg/m^3]
   real(kind=8), parameter 	:: rho0r=1.0/rho0 
   real(kind=8), parameter  	:: vcpw=4.2e6                   ![J/m^3/K]volum. heat cap. of water
   real(kind=8), parameter	:: small=1.0e-8                 !small value

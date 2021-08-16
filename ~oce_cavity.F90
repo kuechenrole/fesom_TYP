@@ -232,12 +232,12 @@ subroutine cavity_heat_water_fluxes_3eq
   real (kind=8)  :: ep1,ep2,ep3,ep4,ep5,ep31
   real (kind=8)  :: ex1,ex2,ex3,ex4,ex5,ex6
   real (kind=8)  :: vt1,sr1,sr2,sf1,sf2,tf1,tf2,tf,sf,seta,re
-  integer        :: n, n3, nk, nk2
+  integer        :: n, n3, nk
 
   real(kind=8),parameter ::  rp =   0.                        !reference pressure
-  real(kind=8),parameter ::  a   = -0.0573 !OR for Miso  -0.0575                    !Foldvik&Kvinge (1974)
-  real(kind=8),parameter ::  b   =  0.0832 !OR for Mison   0.0901
-  real(kind=8),parameter ::  c   =  7.53e-4 !OR for Miso  7.61e-4
+  real(kind=8),parameter ::  a   = -0.0575                    !Foldvik&Kvinge (1974)
+  real(kind=8),parameter ::  b   =  0.0901
+  real(kind=8),parameter ::  c   =  7.61e-4
 
   real(kind=8),parameter ::  pr  =  13.8                      !Prandtl number      [dimensionless]
   real(kind=8),parameter ::  sc  =  2432.                     !Schmidt number      [dimensionless]
@@ -249,8 +249,8 @@ subroutine cavity_heat_water_fluxes_3eq
 
   real(kind=8),parameter ::  tob=  -20.                       !temperatur at the ice surface
   real(kind=8),parameter ::  rhoi=  917.                      !mean ice density
-  real(kind=8),parameter ::  cpw =  3974 !OR for Misomip+    4180.0                    !Barnier et al. (1995)
-  real(kind=8),parameter ::  lhf =  3.34e+5                   !latent heat of fusion
+  real(kind=8),parameter ::  cpw =  4180.0                    !Barnier et al. (1995)
+  real(kind=8),parameter ::  lhf =  3.33e+5                   !latent heat of fusion
   real(kind=8),parameter ::  tdif=  0.0 !for Misomip+ 1.54e-6                   !thermal conductivity of ice shelf !RG4190 / RG44027
   real(kind=8),parameter ::  atk =  273.15                    !0 deg C in Kelvin
   real(kind=8),parameter ::  cpi =  0.0 !for Misomip+ OR   152.5+7.122*(atk+tob)     !Paterson:"The Physics of Glaciers"
@@ -268,11 +268,9 @@ subroutine cavity_heat_water_fluxes_3eq
 
   do n=1,myDim_nod2D+eDim_nod2D      
      if(cavity_flag_nod2d(n)==0) cycle   
-     nk=nod3d_below_nod2d(1,n)!
-     nk2 = nod3d_below_nod2d(2,n)!OR: Introduced a tracer and velocity sampling distance during Miso work.
-                                 !We now use mean values from the upper most and adjacent level.
-     temp = (tracer(nk,1)+tracer(nk2,1))*0.5
-     sal  = (tracer(nk,2)+tracer(nk2,2))*0.5
+     nk=nod3d_below_nod2d(1,n)
+     temp = tracer(nk,1)	
+     sal  = tracer(nk,2)
      zice = coord_nod3d(3,nk)  !(<0)
 
      ! Calculate the in-situ temperature tin
@@ -295,8 +293,7 @@ subroutine cavity_heat_water_fluxes_3eq
 
 
 
-     !call potit(sal,temp,abs(zice),rp,tin,coord_nod3d(1,nk)/rad,coord_nod3d(2,nk)/rad)
-     tin =temp !OR dirty for MISO, which operates in potential temperature driving. Should have chnaged all occurences from tin to temp below.
+     call potit(sal,temp,abs(zice),rp,tin,coord_nod3d(1,nk)/rad,coord_nod3d(2,nk)/rad)
 
      ! Calculate or prescribe the turbulent heat and salt transfer coeff. GAT and GAS
      ! velocity-dependent approach of Jenkins (1991)
@@ -306,10 +303,8 @@ subroutine cavity_heat_water_fluxes_3eq
      ! if(vt1.eq.0.) vt1=0.001
      !rt      re   = Hz_r(i,j,N)*ds/un        !Reynolds number
 
-     !vt1  = sqrt(uf(nk)**2+uf(nk+n3)**2)
-     vt1  = sqrt(((uf(nk)+uf(nk2))*0.5)**2+((uf(nk+n3)+uf(nk2+n3))*0.5)**2)
-     !vt1  = max(vt1,0.005)           ! RG44030, was 0.001
-     vt1  = vt1+0.01  !OR +tidal velocity for Isomip Com config
+     vt1  = sqrt(uf(nk)*uf(nk)+uf(nk+n3)*uf(nk+n3))
+     vt1  = max(vt1,0.005)           ! RG44030, was 0.001
 
      re   = 10./un                   ! vt1*re (=velocity times length scale over kinematic viscosity) is the Reynolds number
 
@@ -384,15 +379,13 @@ subroutine cavity_heat_water_fluxes_3eq
      endif
 
      ! Calculate the melting/freezing rate [m/s]
-     seta = ep5*(1.0-sal/sf)     !rt thinks this is not needed
+     ! seta = ep5*(1.0-sal/sf)     !rt thinks this is not needed
 
      !rt  t_surf_flux(i,j)=gat*(tf-tin)
      !rt  s_surf_flux(i,j)=gas*(sf-(s(i,j,N,lrhs)+35.0))
 
-     !heat_flux(n)  = rhow*cpw*gat*(tin-tf)      ! [W/m2]  ! positive for upward
-     !water_flux(n) =          gas*(sf-sal)/sf   ! [m/s]   !
-     heat_flux(n)  = rhow*cpw*(gat-rhor*seta)*(tin-tf)      ! [W/m2]  !from RG4177 
-     water_flux(n) =          (gas-rhor*seta)*(sf-sal)/sal   ! [m/s]   ! from RG4177
+     heat_flux(n)  = rhow*cpw*gat*(tin-tf)      ! [W/m2]  ! positive for upward
+     water_flux(n) =          gas*(sf-sal)/sf   ! [m/s]   !
      !heat_flux(n)  = 0.0      ! [W/m2]  ! positive for upward
      !water_flux(n) = 0.0     ! [m/s]   !
 

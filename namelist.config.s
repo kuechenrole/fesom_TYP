@@ -9,8 +9,8 @@ GammaT=0.01
 /
 
 &timestep
-step_per_day= 480
-run_length=3
+step_per_day= 120!360        ! 960
+run_length=5
 run_length_unit='y' 		! y, m, d, s
 /
 
@@ -21,12 +21,12 @@ yearnew=2021
 /
 
 &paths
-MeshPath='/work/ollie/orichter/mesh/oce0_z/'
+MeshPath='/work/ollie/orichter/mesh/oce0_s/'
 OpbndPath=' '
 ClimateDataPath= ''
 ForcingDataPath=''
 TideForcingPath= ''
-ResultPath     = '/work/ollie/orichter/data/oce0com_z_0.01/'
+ResultPath     = '/work/ollie/orichter/data/oce0_s/'
 
 
 /
@@ -44,7 +44,7 @@ logfile_outfreq=1  	        !in logfile info. output frequency, # steps
 /
 
 &mesh_def
-grid_type=1			!1 z-level, 2 sigma, 3 z+sigma
+grid_type=2			!1 z-level, 2 sigma, 3 z+sigma
 /
 
 &geometry

@@ -134,8 +134,8 @@ contains
     forcing_rec(5) = daynew
     forcing_rec(6) = 1+int(modtimeold/onehour_sec)+24*(daynew-1)
     
-    if(mype==0) write(*,*) 'forcing_rec ',forcing_rec
-    if(mype==0) write(*,*) modtimeold,daynew,istep
+    !if(mype==0) write(*,*) 'forcing_rec ',forcing_rec
+    !if(mype==0) write(*,*) modtimeold,daynew,istep
 
     ! interpolation coefficients
     interp_coef(1)=mod(timeold, sixhour_sec)/sixhour_sec

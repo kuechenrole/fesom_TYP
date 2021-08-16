@@ -20,8 +20,14 @@ subroutine fcn_density(t,s,z,rho)
   real(kind=8), intent(OUT)      :: rho                 
   real(kind=8)                   :: rhopot, bulk
 
+  real(kind=8),parameter ::  alpha = 3.733e-5 !Thermal expansion coefficient
+  real(kind=8),parameter ::  beta  = 7.843e-4 !Salinity contraction coefficient
+  real(kind=8),parameter ::  tref  = -1.0 !Reference temperature [degC]
+  real(kind=8),parameter ::  sref  = 34.2 !Reference Salinity [psu]
+
   if(density_linear) then
-     rho = -rho0 * 2.0e-4 * t
+     !rho = -rho0 * 2.0e-4 * t
+     rho = rho0 * (1-alpha*(t-tref)+beta*(s-sref))
   else
      bulk = 19092.56 + t*(209.8925 				&
           - t*(3.041638 - t*(-1.852732e-3			&

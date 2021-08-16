@@ -41,9 +41,18 @@ subroutine convect_adjust
               Av(node)=visc_conv_limit
            endif
         end if
+     ! OR: MISOMIP would like to have CA only, but fesom seems to need KPP to work; As a compromise, I've included an upper limit for Kv and Av 
+     !if (Kv(node,1)>diff_conv_limit) then
+     !    Kv(node,1)=diff_conv_limit
+     !endif
+
+     !if (Av(node)>visc_conv_limit) then
+     !    Av(node)=visc_conv_limit
+     !endif        
 
      end do
 
   end do
+  
 end subroutine convect_adjust
 

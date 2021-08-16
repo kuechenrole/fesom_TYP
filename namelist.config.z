@@ -9,8 +9,8 @@ GammaT=0.01
 /
 
 &timestep
-step_per_day= 480
-run_length=3
+step_per_day= 120!360        ! 960
+run_length=5
 run_length_unit='y' 		! y, m, d, s
 /
 
@@ -26,7 +26,7 @@ OpbndPath=' '
 ClimateDataPath= ''
 ForcingDataPath=''
 TideForcingPath= ''
-ResultPath     = '/work/ollie/orichter/data/oce0com_z_0.01/'
+ResultPath     = '/work/ollie/orichter/data/oce0_z/'
 
 
 /

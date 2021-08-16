@@ -344,6 +344,9 @@ subroutine ocean_array_setup
   if(trim(mix_scheme)=='PP') then
      call oce_mixing_pp_init
   end if
+  if(trim(mix_scheme)=='no') then 
+     call oce_mixing_back
+  end if
   if(tidal_mixing) call oce_mixing_tidal_init 
 
   ! initialize the fct scheme

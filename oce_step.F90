@@ -65,6 +65,8 @@ subroutine ocean_step
      call oce_mixing_pp
   elseif(trim(mix_scheme)=='MY2p5') then
      call oce_mixing_MY2p5
+  elseif(trim(mix_scheme)=='no') then
+     call convect_adjust
   end if
   
   if(tidal_mixing) call oce_mixing_tidal(Av, Kv)
@@ -207,20 +209,20 @@ subroutine ocean_step
  
 !if use_tracer_gls is undefined
 #ifdef use_tracer_fct
-  if (mype.eq.0) write(*,*) 'before call tracer_rhs_tg'
+  !if (mype.eq.0) write(*,*) 'before call tracer_rhs_tg'
   t111=MPI_Wtime()
   call tracer_rhs_tg
   t112=MPI_Wtime()
-  if (mype.eq.0) write(*,*) 'before call ts_sfc_bc'
+  !if (mype.eq.0) write(*,*) 'before call ts_sfc_bc'
   call ts_sfc_bc
   t113=MPI_Wtime()
-  if (mype.eq.0) write(*,*) 'before call ptr_sfc_bc'
+  !if (mype.eq.0) write(*,*) 'before call ptr_sfc_bc'
   if(use_passive_tracer) call ptr_sfc_bc
   t114=MPI_Wtime()
   if(use_age_tracer) call age_tracer_tendency
   t115=MPI_Wtime()
   t11=MPI_Wtime()
-  if (mype.eq.0) write(*,*) 'before call fct_tracer_solve'
+  !if (mype.eq.0) write(*,*) 'before call fct_tracer_solve'
   call fct_tracer_solve 
   t116=MPI_Wtime()
 #else

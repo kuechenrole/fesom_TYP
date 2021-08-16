@@ -5,13 +5,15 @@ module g_config
   save
 
   ! *** Modelname ***
-  character(7)             	:: runid='RG12345'                ! a model/setup name
+  character(9)             	:: runid='iceOcean1'                ! a model/setup name
+  !character(7)             	:: runid='RG47911'                ! a model/setup name
     ! ISOMIP+ settings
   character(4)                 :: case_initial='warm'           ! 'warm', 'cold'
   character(4)                 :: case_forcing='warm'           ! 'warm', 'cold'
+  logical                      :: variable_GammaTS=.true.
+  real(kind=8)                 :: GammaT=0.01             !
 
-
-  namelist /modelname/ runid, case_initial, case_forcing
+  namelist /modelname/ runid, case_initial, case_forcing, variable_GammaTS, GammaT
 
   ! *** time step ***
   integer                  	:: step_per_day=12           	!number of steps per day

@@ -189,7 +189,7 @@ n3=myDim_nod3d+eDim_nod3d
         do k=1,num_layers_below_nod2d(nsurf)+1
          if (nod3d_below_nod2d(k,nsurf).eq.i) kcrit=k
         enddo
-        write(*,'(a11,i8,i7,i3,i3,2f8.2,f8.1,2f6.2,2f6.1)')'uv>10: u at',i,nsurf,kcrit,cavity_flag_nod2d(nod2d_corresp_to_nod3d(i)), &
+        write(*,'(a11,i8,i7,i3,i3,2f8.2,f8.1,2f10.2,2f10.1)')'uv>10: u at',i,nsurf,kcrit,cavity_flag_nod2d(nod2d_corresp_to_nod3d(i)), &
                         geolon(i)*180./3.14, &
                         geolat(i)*180./3.14, &
                         coord_nod3d(3,i), &

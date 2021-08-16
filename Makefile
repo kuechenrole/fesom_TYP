@@ -29,6 +29,7 @@ MODULES =	oce_modules.o                 	 	\
 		gen_modules_forcing.o         	      	\
 		gen_modules_read_NetCDF.o      	 	\
 		gen_modules_diagnose.o			\
+                oce_mixing_back.o                       \
 		oce_mixing_kpp.o			\
 		oce_mixing_pp.o				\
 		oce_mixing_my2p5.o			\
