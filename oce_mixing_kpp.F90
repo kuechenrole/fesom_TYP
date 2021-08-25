@@ -762,24 +762,24 @@ contains
        !           evaluate function of Ri# for convection eqn. (28a)
        !-----------------------------------------------------------------------
 
-       !fcont  = 0.5 * ( abs(viscA(row)) - viscA(row) )
-       !fcont  = fcont / (AMAX1(fcont,epsln))
+       fcont  = 0.5 * ( abs(viscA(row)) - viscA(row) )    ! switched on RT 25.11.2016 RG89122
+       fcont  = fcont / (AMAX1(fcont,epsln))
 
        !-----------------------------------------------------------------------
        !           add mixing due to internal wave activity (equ 29),
        !           static instability and shear instability 
        !-----------------------------------------------------------------------
 
-       !viscA(row)     = Av0 + fcont*visc_conv_limit + visc_sh_limit*frit   
-       !diffK(row,1)   = Kv0 + fcont*diff_conv_limit + diff_sh_limit*frit 
-       !diffK(row,2)   = diffK(row,1)         
+       !viscA(row)    = Av0 + fcont*visc_conv_limit + visc_sh_limit*frit   
+       !diffK(row,1)  = Kv0 + fcont*diff_conv_limit + diff_sh_limit*frit 
+       !diffK(row,2)  = diffK(row,1)         
 
        ! viscosity
        viscA(row)     = Av0 + visc_sh_limit*frit 
        
        ! diffusivity
        if(Kv0_const) then
-          diffK(row,1) = Kv0 + diff_sh_limit*frit 
+          diffK(row,1) = Kv0 + diff_sh_limit*frit + fcont*0.01  !  RT RG81922
        else
           dep=coord_nod3d(3,row)
           lat=abs(geolat(row))/rad
@@ -790,7 +790,8 @@ contains
           end if
           aux=(0.6+1.0598/3.1415926*atan(4.5e-3*(abs(dep)-2500.0)))*1e-5
           
-          diffK(row,1) = aux*ratio + diff_sh_limit*frit
+          !rt RG81922 diffK(row,1) = aux*ratio + diff_sh_limit*frit
+          diffK(row,1) = aux*ratio + diff_sh_limit*frit  + fcont * 0.01  ! RT RG89122
        end if
        diffK(row,2)   = diffK(row,1)  
 

@@ -26,8 +26,16 @@ subroutine init_output
   character(100)            :: longname
   character(100)            :: filename
   character(1)              :: trind
+  integer                   :: rst_days(10)    
 
-  if(yearnew==yearold) return
+  !OR needed to initialize every three month for ice sheet coupling
+  !if(yearnew==yearold) return 
+  rst_days = (/1,  37,  73, 109, 145, 181, 217, 253, 289, 325/)
+  if (any(dayold==rst_days)==.false.) return
+  !if((dayold /= 91 .or. dayold/= 181 .or. dayold/= 271 .or. dayold /=1) .and. &
+  !   timeold /= 0.0) return
+  !OR-
+
   if (mype/=0) return
 
   write(*,*) 'initialize new output files'

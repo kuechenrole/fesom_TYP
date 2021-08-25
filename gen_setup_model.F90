@@ -55,7 +55,7 @@ subroutine read_namelist
   read (20,NML=calendar)
   close (20)
 
-  nmlfile ='namelist.oce.miso'    ! name of ocean namelist file
+  nmlfile ='namelist.oce'    ! name of ocean namelist file
   open (20,file=nmlfile)
   read (20,NML=viscdiff)
   read (20,NML=boundary)

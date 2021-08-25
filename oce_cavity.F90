@@ -251,7 +251,7 @@ subroutine cavity_heat_water_fluxes_3eq
   real(kind=8),parameter ::  rhoi=  917.                      !mean ice density
   real(kind=8),parameter ::  cpw =  3974 !OR for Misomip+    4180.0                    !Barnier et al. (1995)
   real(kind=8),parameter ::  lhf =  3.34e+5                   !latent heat of fusion
-  real(kind=8),parameter ::  tdif=  0.0 !for Misomip+ 1.54e-6                   !thermal conductivity of ice shelf !RG4190 / RG44027
+  real(kind=8),parameter ::  tdif=  1.54e-6                   !thermal conductivity of ice shelf !RG4190 / RG44027
   real(kind=8),parameter ::  atk =  273.15                    !0 deg C in Kelvin
   real(kind=8),parameter ::  cpi =  0.0 !for Misomip+ OR   152.5+7.122*(atk+tob)     !Paterson:"The Physics of Glaciers"
 
@@ -590,8 +590,7 @@ subroutine cavity_momentum_fluxes
      ! need to check the sensitivity to the drag coefficient
      ! here I use the bottom stress coefficient
 
-     !aux=sqrt(u_w(n)**2+v_w(n)**2)*rho0*C_d   * 2.  ! RT factor 2. for stress parameter for RG44025
-     aux=sqrt(u_w(n)**2+v_w(n)**2)*rho0*C_d  ! OR factor 2 taken away for isomip
+     aux=sqrt(u_w(n)**2+v_w(n)**2)*rho0*C_d   * 2.  ! RT factor 2. for stress parameter for RG44025
      stress_x(n)=-aux*u_w(n)
      stress_y(n)=-aux*v_w(n)
 

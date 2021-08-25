@@ -280,7 +280,7 @@ subroutine save_dist_mesh
 
   integer        n, m, fileID, nend, nini,ed(2)
   character*10   mype_string
-  character*80   file_name
+  character*90   file_name
   character*80   dist_mesh_dir
   integer, allocatable, dimension(:)  :: temp, ztemp, count
 

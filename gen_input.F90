@@ -29,7 +29,7 @@ subroutine oce_input
   n3=ToDim_nod3D           
 
   ! open files
-  filename=trim(ResultPath)//runid//'.'//cyearold//'.oce.nc'
+  filename=trim(ResultPath)//runid//'.'//cyearold//'.oce.ini.nc'
   status = nf_open(filename, nf_nowrite, ncid)
   if (status .ne. nf_noerr) call handle_err(status)
 
@@ -305,7 +305,7 @@ subroutine ice_input
   allocate(aux2(nod2D))  
 
   ! open files
-  filename=trim(ResultPath)//runid//'.'//cyearold//'.ice.nc'
+  filename=trim(ResultPath)//runid//'.'//cyearold//'.ice.ini.nc'
   status = nf_open(filename, nf_nowrite, ncid)
   if (status .ne. nf_noerr) call handle_err(status)
 

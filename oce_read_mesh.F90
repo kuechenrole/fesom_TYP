@@ -23,7 +23,7 @@ subroutine read_mesh
   integer        vert_nodes(100)
   real(kind=8)   x, y, z
   character*10   mype_string
-  character*80   file_name
+  character*90   file_name
   character*80   dist_mesh_dir
 
   write(mype_string,'(i4.4)') mype  
